@@ -5,7 +5,7 @@ library(XLConnect)
 
 
 #########################################
-### SET SPECEIS SPECIFIC NETWORK INFO ###
+### SET SPECIES SPECIFIC NETWORK INFO ###
 #########################################
 
 ### ELK EXAMPLE ###
@@ -17,8 +17,8 @@ library(XLConnect)
 ### User specified information specific to the simulation ###
 
 SIMNAME <- "Baseline1" # Specifies which baseline folder 
-# This is the subfoulder where the network data, outputs, and .RData file should are saved
-# This is also the subfoulder where the network input files are stored: 
+# This is the subfolder where the network data, outputs, and .RData file should are saved
+# This is also the subfolder where the network input files are stored: 
                         #   "./SIMNAME/network_inputs_NETNAME.xlsx
 
 NETNAME <- c("calves", "adults") # Give a distinct name for each class as used in input files
@@ -35,16 +35,12 @@ num_nodes <- 3 # Number of nodes in the network
 
 tmax <- 301 # Maximum number of steps to take - assume non convergence if t=tmax
 
-OUTPUTS <- TRUE # TRUE = Process final outputs, FALSE = Do not process just run the sumulation.
+OUTPUTS <- TRUE # TRUE = Process final outputs, FALSE = Do not process just run the simulation.
 
 
 ## For debugging your model equations ##
 SILENT <- TRUE # TRUE = Do not print data to console - silence outputs.
 # FALSE = Print population data and network function data to the Console for debugging.
-#SAVE_VAR <- TRUE # TRUE = save f_update, p_update, s_update, and CR for each time step of the calculation.
-                # This could lead to an extremely large data set!!!
-                # FALSE = Do not save this data, just report CR at the end.
-                #DEFINED BELOW
 SAVE_VAR <- TRUE # TRUE = save f_update, p_update, s_update, and CR for each time step of the calculation.
 # This could lead to an extremely large data set!!!
 # FALSE = Do not save this data, just report CR at the end.
