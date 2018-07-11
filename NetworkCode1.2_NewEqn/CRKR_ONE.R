@@ -1,5 +1,3 @@
-## Analysis Metrics ##
-
 
 SEASONNAMES <- c()
 for (i in 1:seasons){
@@ -104,10 +102,11 @@ for (j in 1:num_nodes){
   xend <- j*NUMNET
   for (x in xstart:xend){
     TEMP <- matrix(0,nrow(AMATRIX), ncol(AMATRIX))
-    TEMP[x,x] <- 1
+    TEMP[x,x] <- delta # Delta defined functional KR value NEED -- added season length weight
     Enc <- Enc + TEMP
   }
   Drr <- Inc - Enc
+
   
   
   for (SN in 1:seasons){

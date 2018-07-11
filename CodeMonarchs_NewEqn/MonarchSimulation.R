@@ -33,11 +33,13 @@ seasons <- 7 # Number of seasons or steps in one annul cycle.
 num_nodes <- 4 # Number of nodes in the network
 # This must match the number of initial conditions given in input files
 
-tmax <- 201 # Maximum number of steps to take - assume non convergence if t=tmax
+tmax <- 301 # Maximum number of steps to take - assume non convergence if t=tmax
 
 OUTPUTS <- TRUE # TRUE = Process final outputs, FALSE = Do not process just run the sumulation.
 
-delta <- 1 # Used in KR Calculation 1 = full node removal 0 = do nothing
+delta <- .3 # Used in KR Calculation 1 = full node removal 0 = do nothing
+
+SN_length <- matrix(c(6, 1, 1, 1, 1, 1, 1),1,seasons) # length of the seasons used in perturbation and KR calculation.
 
 ## For debugging your model equations ##
 SILENT <- TRUE # TRUE = Do not print data to console - silence outputs.
@@ -60,7 +62,7 @@ setwd(this.dir)
 # Set location of source code
 netcode <- c("../NetworkCode1.2_NewEqn/")
 # Clear the workspace reserving needed network input variables
-base_variables <- c("seasons", "num_nodes", "NETNAME", "tmax", "SIMNAME", "ERR", "OUTPUTS", "SILENT","netcode","base_variables", "SAVE_VAR", "delta")
+base_variables <- c("seasons", "num_nodes", "NETNAME", "tmax", "SIMNAME", "ERR", "OUTPUTS", "SILENT","netcode","base_variables", "SAVE_VAR", "delta", "SN_length")
 if(!exists("pert_variables")){pert_variables <- c("pert_variables")}
 base_variables <- c(base_variables, "pert_variables")
 rm(list=setdiff(ls(), base_variables))

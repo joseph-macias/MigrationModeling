@@ -37,6 +37,9 @@ tmax <- 301 # Maximum number of steps to take - assume non convergence if t=tmax
 
 OUTPUTS <- TRUE # TRUE = Process final outputs, FALSE = Do not process just run the simulation.
 
+delta <- .3 # Used in KR Calculation 1 = full node removal 0 = do nothing
+
+SN_length <- matrix(c(6,6),1,seasons) # length of the seasons used in perturbation and KR calculation.
 
 ## For debugging your model equations ##
 SILENT <- TRUE # TRUE = Do not print data to console - silence outputs.
@@ -63,7 +66,7 @@ netcode <- c("../NetworkCode1.2_NewEqn/")
 
 
 # Clear the workspace reserving needed network input variables
-base_variables <- c("seasons", "num_nodes", "NETNAME", "tmax", "SIMNAME", "ERR", "OUTPUTS", "SILENT", "SAVE_VAR","netcode","base_variables","M")
+base_variables <- c("seasons", "num_nodes", "NETNAME", "tmax", "SIMNAME", "ERR", "OUTPUTS", "SILENT","netcode","base_variables","SAVE_VAR","delta","SN_length")
 if(!exists("pert_variables")){pert_variables <- c("pert_variables")}
 base_variables <- c(base_variables, "pert_variables") 
 

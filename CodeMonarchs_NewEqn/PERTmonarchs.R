@@ -1,6 +1,8 @@
 ## RUN the SURVIVAL PERTURBATIONS
 ## Run MonarchSimulation.R before running Perturbations
-
+# Set the working directory
+this.dir <- dirname(parent.frame(2)$ofile)
+setwd(this.dir)
 ## Run the original baseline code:
 source("MonarchSimulation.R")
 
@@ -77,7 +79,10 @@ for (p in 1:length(PERT)){
     # If commented out this resets N-initial to the original initial populations in the baseline.
     
     for (SN in 1:seasons){  # perturb all seasons of breeding and winter !!!!!!!!!!! THIS MUST BE CHANGED FOR EACH SPECIES !!!!!!!!!!!!!!
-        alpha[[cl]][[SN]]$sA[[num]] <- BASE_alpha[[cl]][[SN]]$sA[[num]]*PERT[p]
+        alpha[[1]][[SN]]$sA[[num]] <- BASE_alpha[[1]][[SN]]$sA[[num]]*PERT[p]
+        if(num==1){
+          alpha[[1]][[SN]]$sA[[num]] <- BASE_alpha[[1]][[SN]]$sA[[num]]*PERT[p]^(6)
+        }
         # CANT MAKE SURVIVAL RATES GREATER THAN 1
         if(alpha[[cl]][[SN]]$sA[[num]]>1){ 
           print(paste("Survival rate for PERT: ", PERT[p], "on Node", num, "season", SN, "is",alpha[[cl]][[SN]]$sA[[num]], ". Resetting to 1", sep=" " ))

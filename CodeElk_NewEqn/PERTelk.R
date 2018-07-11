@@ -1,6 +1,8 @@
 ## RUN the SURVIVAL PERTURBATIONS
 ## Run ElkSimulation.R before running Perturbations
-
+# Set the working directory
+this.dir <- dirname(parent.frame(2)$ofile)
+setwd(this.dir)
 ## Run the original baseline code:
 source("ElkSimulation.R")
 

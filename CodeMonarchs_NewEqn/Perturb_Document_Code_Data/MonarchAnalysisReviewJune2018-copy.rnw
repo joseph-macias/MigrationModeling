@@ -51,7 +51,7 @@
 
 <<label=runscript, eval=TRUE, echo=FALSE, results=hide>>=
 
-load("DataFiles/PERTdataMonarch.RData") # Load R data from the file
+load("DataFiles/PERTdataMonarch_delta_0.3.RData") # Load R data from the file
 
 library(xtable)
 library(data.table)
@@ -204,21 +204,6 @@ for (i in 1:count){
   K[i] <- NEWK
 }
 
-# population weighted cr vaules: weighted first within nodes by class and then across seasons.
-# updated 6/11/18
-
-# Population at each node for each season in the equillibrium state -> stored in BASEPop_total
-# Population weighted average withing classes at each ndoe -> stored in BASECRt
-
-Tstart <- BASEtimestep - seasons
-Tend <- BASEtimestep - 1
-
-# Season population weighted CR values for the network
-PLOTBASECR <- matrix(0,nrow = num_nodes, ncol = 1)
-for (j in 1:seasons){
-  PLOTBASECR <- PLOTBASECR + BASECRt[,j]*BASEPop_TOTAL[,j]/sum(BASEPop_TOTAL[,j])
-}
-
 
 ######################### END DATA #############################
 
@@ -247,11 +232,12 @@ The Monarch model has seven seasons (Winter, April, May, June, July, August, Sep
 # Find MAX/MIN K values
 PLOTMAXK <- matrix(0,num_nodes,1)
 PLOTMINK <- matrix(0,num_nodes,1)
-
  for(i in 1:num_nodes){
    PLOTMAXK[i] <- max(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
    PLOTMINK[i] <- min(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
  }
+
+PLOTBASECR <- BASECRs #CRs contains the population weighted CR value for each node (averaged across clases and seasons)
 
 plot(0, 0, 
      type="l", 
@@ -330,28 +316,16 @@ $W^r$ is calculated as the percent of the total population residing at a node. T
 <<label=monarch_barcr_WR, fig=TRUE, include=FALSE, echo=FALSE, eps=FALSE, pdf=TRUE>>=
 
 
-#Class population weighted WR values for each node/season
-tempWR <- matrix(0, nrow = num_nodes, ncol=seasons)
-for (i in 1:num_nodes){
-  start <- 1+(i-1)*NUMNET
-  end <- start + NUMNET -1
-  if (NUMNET == 1) {
-    tempWR[i,] <- BASEWRt[i,]
-  }
-  else {tempWR[i,] <- colSums(BASEWRt[start:end,])} # columns shoukd sum to one
-}
-
-# Calculate a direct average across seasons
-PLOTWR <- rowMeans(tempWR)
-
 # Find MAX/MIN K values
 PLOTMAXK <- matrix(0,num_nodes,1)
 PLOTMINK <- matrix(0,num_nodes,1)
-
  for(i in 1:num_nodes){
    PLOTMAXK[i] <- max(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
    PLOTMINK[i] <- min(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
  }
+
+# Calculate a direct average across seasons
+PLOTWR <- BASEWRs # WRs contains the average population proportions (sumed across classes within nodes and averaged across seasions) - not population weighted
 
 plot(0, 0, 
      type="l", 
@@ -511,21 +485,15 @@ The $K^r$ calculation results in criticality vales for each node during each sea
 
 <<label=monarch_barcr_KR, fig=TRUE, include=FALSE, echo=FALSE, eps=FALSE, pdf=TRUE>>=
 
-# Average across the seasons
-PLOTKR <- matrix(0,num_nodes,1)
-# Season population weighted KR values for the network
-for (j in 1:seasons){
-  PLOTKR <- PLOTKR + BASEKr[,j]*BASEPop_TOTAL[,j]/sum(BASEPop_TOTAL[,j])
-}
-
 # Find MAX/MIN K values
 PLOTMAXK <- matrix(0,num_nodes,1)
 PLOTMINK <- matrix(0,num_nodes,1)
-
  for(i in 1:num_nodes){
    PLOTMAXK[i] <- max(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
    PLOTMINK[i] <- min(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
  }
+
+PLOTKR <- BASEKRs #KRs contains the population weighted seasonal average KR values
 
 plot(0, 0, 
      type="l", 

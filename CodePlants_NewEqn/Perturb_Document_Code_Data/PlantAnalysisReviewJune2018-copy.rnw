@@ -210,20 +210,6 @@ for (i in 1:count){
   K[i] <- NEWK
 }
 
-# population weighted cr vaules: weighted first within nodes by class and then across seasons.
-# updated 6/11/18
-
-# Population at each node for each season in the equillibrium state -> stored in BASEPop_total
-# Population weighted average withing classes at each ndoe -> stored in BASECRt
-
-Tstart <- BASEtimestep - seasons
-Tend <- BASEtimestep - 1
-
-# Season population weighted CR values for the network
-PLOTBASECR <- matrix(0,nrow = num_nodes, ncol = 1)
-for (j in 1:seasons){
-  PLOTBASECR <- PLOTBASECR + BASECRt[,j]*BASEPop_TOTAL[,j]/sum(BASEPop_TOTAL[,j])
-}
 
 
 ######################### END DATA #############################

@@ -167,7 +167,7 @@ legend('right', NETNAME , lty=1, pch=dottype, bty='n', cex=.75)
 
 To investigate the utility of the metrics as an indicator of the change in carrying capacity $K$ we consider the following perturbations to the survival rate at each node:
 
-\[PERT = 1.2,1.1,.9,.8\]
+\[PERT = .9, .8, .7, .6, .5\]
 
 Some notes about the simulations:
 \begin{itemize}
@@ -195,21 +195,6 @@ for (i in 1:count){
   K[i] <- NEWK
 }
 
-# population weighted cr vaules: weighted first within nodes by class and then across seasons.
-# updated 6/11/18
-
-# Population at each node for each season in the equillibrium state -> stored in BASEPop_total
-# Population weighted average withing classes at each ndoe -> stored in BASECRt
-
-Tstart <- BASEtimestep - seasons
-Tend <- BASEtimestep - 1
-
-# Season population weighted CR values for the network
-PLOTBASECR <- matrix(0,nrow = num_nodes, ncol = 1)
-for (j in 1:seasons){
-  PLOTBASECR <- PLOTBASECR + BASECRt[,j]*BASEPop_TOTAL[,j]/sum(BASEPop_TOTAL[,j])
-}
-
 ######################### END DATA #############################
 
 @
@@ -235,18 +220,19 @@ We will consider new metrics for the x-axis of our graph:
 # Find MAX/MIN K values
 PLOTMAXK <- matrix(0,num_nodes,1)
 PLOTMINK <- matrix(0,num_nodes,1)
-
  for(i in 1:num_nodes){
    PLOTMAXK[i] <- max(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
    PLOTMINK[i] <- min(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
  }
+
+PLOTBASECR <- BASECRs #CRs contains the population weighted CR value for each node (averaged across clases and seasons)
 
 plot(0, 0, 
      type="l", 
      lwd=0, 
      xlim = c(min(PLOTBASECR),max(PLOTBASECR)), 
      ylim = c(min(PLOTMINK),max(PLOTMAXK)), 
-     main="Range of K values for each node.",  
+     main="Range of Network Carying Capacities (K) vs Baseline CR",  
      xlab="Node Baseline Population Weighted $C^r_t$", 
      ylab="Network K")
 symb <- 0
@@ -313,17 +299,16 @@ The $C^r$ values are calculated using a population weighted average for the clas
 
 <<label=pintail_barcr_WR, fig=TRUE, include=FALSE, echo=FALSE, eps=FALSE, pdf=TRUE>>=
 
-# Calculate population weighted average CR values... add seasons 1 and 2 then add up classes at each node.
-# Class population weighted WR values for each node/season
-tempWR <- matrix(0, nrow = num_nodes, ncol=seasons)
-for (i in 1:num_nodes){
-  start <- 1+(i-1)*NUMNET
-  end <- start + NUMNET -1
-  tempWR[i,] <- colSums(BASEWRt[start:end,]) # columns shoukd sum to one
-}
+# Find MAX/MIN K values
+PLOTMAXK <- matrix(0,num_nodes,1)
+PLOTMINK <- matrix(0,num_nodes,1)
+ for(i in 1:num_nodes){
+   PLOTMAXK[i] <- max(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
+   PLOTMINK[i] <- min(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
+ }
 
 # Calculate a direct average across seasons
-PLOTWR <- rowMeans(tempWR)
+PLOTWR <- BASEWRs # WRs contains the average population proportions (sumed across classes within nodes and averaged across seasions) - not population weighted
 
 # Find MAX/MIN K values
 PLOTMAXK <- matrix(0,num_nodes,1)
@@ -432,7 +417,7 @@ for(j in 1:num_nodes){
   # Plot the range for each node
   
   DATAPLOT[j,] <- K[seq(j,num_nodes*length(PERT),by=num_nodes)]
-  plot(matrix(BASEDS[j],1,length(PERT)),K[seq(j,num_nodes*length(PERT),by=num_nodes)], 
+  plot(matrix(BASEDS[j],1,length(PERT)),K[seq(j,num_nodes*length(PERT),by=num_nodes)], #DS contains the network proportional dependence
        type="o", 
        lwd=1, 
        pch=symb, 
@@ -486,21 +471,15 @@ $D_s$ is calculated following Bagstad et al. We first find the population weight
 \subsection{Criticality - NEW \texorpdfstring{$K^r$}{KR}}
 <<label=pintail_barcr_KR, fig=TRUE, include=FALSE, echo=FALSE, eps=FALSE, pdf=TRUE>>=
 
-# Average across the seasons
-PLOTKR <- matrix(0,num_nodes,1)
-# Season population weighted KR values for the network
-for (j in 1:seasons){
-  PLOTKR <- PLOTKR + BASEKr[,j]*BASEPop_TOTAL[,j]/sum(BASEPop_TOTAL[,j])
-}
-
 # Find MAX/MIN K values
 PLOTMAXK <- matrix(0,num_nodes,1)
 PLOTMINK <- matrix(0,num_nodes,1)
-
  for(i in 1:num_nodes){
    PLOTMAXK[i] <- max(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
    PLOTMINK[i] <- min(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
  }
+
+PLOTKR <- BASEKRs #KRs contains the population weighted seasonal average KR values
 
 plot(0, 0, 
      type="l", 
