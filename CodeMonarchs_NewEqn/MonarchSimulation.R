@@ -5,7 +5,7 @@ library(XLConnect)
 
 
 #########################################
-### SET SPECEIS SPECIFIC NETWORK INFO ###
+### SET SPECIES SPECIFIC NETWORK INFO ###
 #########################################
 
 ### MONARCH EXAMPLE ###
@@ -28,14 +28,14 @@ ERR <- .01 # Error tolerance for convergence.
 # To test convergence, we compare total population of all classes in the current season
 # to the matching season from the previous year.
 
-seasons <- 7 # Number of seasons or steps in one annul cycle. 
+seasons <- 7 # Number of seasons or steps in one annual cycle. 
 # This must match number of spreadsheets in input files
 num_nodes <- 4 # Number of nodes in the network
 # This must match the number of initial conditions given in input files
 
 tmax <- 301 # Maximum number of steps to take - assume non convergence if t=tmax
 
-OUTPUTS <- TRUE # TRUE = Process final outputs, FALSE = Do not process just run the sumulation.
+OUTPUTS <- TRUE # TRUE = Process final outputs, FALSE = Do not process just run the simulation.
 
 delta <- .3 # Used in KR Calculation 1 = full node removal 0 = do nothing
 
@@ -45,9 +45,6 @@ SN_length <- matrix(c(6, 1, 1, 1, 1, 1, 1),1,seasons) # length of the seasons us
 SILENT <- TRUE # TRUE = Do not print data to console - silence outputs.
                 # FALSE = Print population data and network function data to the Console for debugging.
 SAVE_VAR <- TRUE
-
-
-
 
 ### Users should not need to interact with the code below ###
 
@@ -67,8 +64,13 @@ if(!exists("pert_variables")){pert_variables <- c("pert_variables")}
 base_variables <- c(base_variables, "pert_variables")
 rm(list=setdiff(ls(), base_variables))
 if(SAVE_VAR == TRUE){
-  save_variables <- c("save_varibles")
+  save_variables <- c("save_variables")
   base_variables <- c(base_variables, "save_variables")   }
+## CHOOSE PERT VALUES
+PERT <- c(.9, .8, .7, .6, .5, 1)   ### For some reason here this only runs if 1 is the last perturbation???
+#List pert_variables
+pert_variables <- c(pert_variables, ls(),"count", "p")
+count <- 0
 
 ### SET UP THE NETWORK(S) ###
 source(paste(netcode,"NetworkSetup.R",sep=""))
@@ -85,6 +87,8 @@ if (OUTPUTS == T){
   source(paste(netcode,"NetworkOutputs.R",sep=""))
 }
 
+### RUN PERTURBATION ANALYSIS ###
+source(paste("PERTmonarchs.R",sep=""))
 
 ######################
 ### SAVE THE DATA ####
