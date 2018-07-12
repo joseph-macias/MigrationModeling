@@ -3,8 +3,6 @@
 # Set the working directory
 this.dir <- dirname(parent.frame(2)$ofile)
 setwd(this.dir)
-## Run the original baseline code:
-#source("MonarchSimulation.R")
 
 # SAVE ORIGINAL VALUES:
 BASECR <- CR
@@ -22,10 +20,6 @@ BASEPop_TOTAL <- Pop_TOTAL
 BASEN <- N
 BASEtimestep <- timestep
 BASEtotal_pop <- total_pop
-
-## CHOOSE PERT VALUES- chosen in MonarchSimulation.R
-
-
 
 print("Perturbing Survival Rates at each Node")
 print(PERT)
@@ -61,8 +55,8 @@ if(SAVE_VAR==TRUE){
 }
 
 #List pert_variables
-pert_variables <- c(pert_variables, ls(),"count", "p")
-count <- 0
+#pert_variables <- c(pert_variables, ls(),"count", "p")
+#count <- 0
 
 for (p in 1:length(PERT)){
   for (num in 1:num_nodes){
