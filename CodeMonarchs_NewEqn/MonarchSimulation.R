@@ -24,6 +24,10 @@ SIMNAME <- "Baseline1" # Specifies which baseline folder
 NETNAME <- c("monarch") # Give a distinct name for each class as used in input files
 # Order is important here we would index [[1]] = class 1 and [[2]] = class 2 in alpha and beta.
 
+SAVENAME <- "CodeMonarchs_NewEqn" # Specifies which folder contains species specific data
+
+RNW <- "MonarchAnalysisReviewJune2018" # Specifies .rnw file to use when producing PDF
+
 ERR <- .01 # Error tolerance for convergence. 
 # To test convergence, we compare total population of all classes in the current season
 # to the matching season from the previous year.
@@ -40,6 +44,10 @@ OUTPUTS <- TRUE # TRUE = Process final outputs, FALSE = Do not process just run 
 delta <- .3 # Used in KR Calculation 1 = full node removal 0 = do nothing
 
 SN_length <- matrix(c(6, 1, 1, 1, 1, 1, 1),1,seasons) # length of the seasons used in perturbation and KR calculation.
+
+RUN_PERT <- TRUE #TRUE = Code will run perturbations with the below rates
+                  # FALSE = Code will just run baseline simulation
+PERT <- c(.9, .8, .7, .6, .5, 1) # survival rate perturbations desired if doing perturbations
 
 ## For debugging your model equations ##
 SILENT <- TRUE # TRUE = Do not print data to console - silence outputs.
@@ -62,8 +70,9 @@ setwd(this.dir)
 # Set location of source code
 netcode <- c("../NetworkCode1.2_NewEqn/")
 # Clear the workspace reserving needed network input variables
-base_variables <- c("seasons", "num_nodes", "NETNAME", "tmax", "SIMNAME", "ERR", "OUTPUTS", "SILENT","netcode","base_variables", "SAVE_VAR", "delta", "SN_length")
+base_variables <- c("seasons", "num_nodes", "NETNAME", "tmax", "SIMNAME", "ERR", "OUTPUTS", "SILENT","netcode","base_variables", "SAVE_VAR", "RUN_PERT", "delta", "SN_length", "PERT","SAVENAME","RNW")
 if(!exists("pert_variables")){pert_variables <- c("pert_variables")}
+pert_variables <- c(pert_variables, ls(),"count", "p") 
 base_variables <- c(base_variables, "pert_variables")
 rm(list=setdiff(ls(), base_variables))
 if(SAVE_VAR == TRUE){
@@ -85,10 +94,191 @@ if (OUTPUTS == T){
   source(paste(netcode,"NetworkOutputs.R",sep=""))
 }
 
+########################
+##  RUN PERTURBATIONS ##
+########################
+if (RUN_PERT == T){
+  source(paste("../", SAVENAME, "/","PERTmonarchs.R",sep = ""))
+}
 
-######################
-### SAVE THE DATA ####
-######################
 
-save.image(file=paste(SIMNAME,"/",SIMNAME, ".RData", sep = ""))
+######################################
+### SAVE THE DATA TO RUN .RNW FILE####
+######################################
 
+save.image(file=paste("../", SAVENAME,"/Perturb_Document_Code_Data/DataFiles/PERTdataMonarch.RData",sep="" ))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##########################
+###   RUN PDF FILE     ###
+##########################
+
+source(paste("../",SAVENAME,"/Perturb_Document_Code_Data/", RNW, ".rnw", sep = ""))

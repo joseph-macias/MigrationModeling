@@ -4,7 +4,6 @@
 this.dir <- dirname(parent.frame(2)$ofile)
 setwd(this.dir)
 ## Run the original baseline code:
-source("ElkSimulation.R")
 
 # SAVE ORIGINAL VALUES:
 BASECR <- CR
@@ -24,8 +23,6 @@ BASEtimestep <- timestep
 BASEtotal_pop <- total_pop
 
 ## CHOOSE PERT VALUES
-PERT <- c(.9, .8, .7, .6, .5, 1)   ### For some reason here this only runs if 1 is the last perturbation???
-
 
 print("Perturbing Survival Rates at each Node")
 print(PERT)
@@ -61,7 +58,6 @@ if(SAVE_VAR==TRUE){
 }
 
 
-pert_variables <- c(pert_variables, ls(),"count", "p")
 count <- 0
 
 for (p in 1:length(PERT)){

@@ -4,7 +4,7 @@
 this.dir <- dirname(parent.frame(2)$ofile)
 setwd(this.dir)
 ## Run the original baseline code:
-source("MonarchSimulation.R")
+#source("MonarchSimulation.R")
 
 # SAVE ORIGINAL VALUES:
 BASECR <- CR
@@ -23,8 +23,8 @@ BASEN <- N
 BASEtimestep <- timestep
 BASEtotal_pop <- total_pop
 
-## CHOOSE PERT VALUES
-PERT <- c(.9, .8, .7, .6, .5, 1)   ### For some reason here this only runs if 1 is the last perturbation???
+## CHOOSE PERT VALUES- chosen in MonarchSimulation.R
+
 
 
 print("Perturbing Survival Rates at each Node")
