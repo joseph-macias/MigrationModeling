@@ -26,6 +26,12 @@ NETNAME <- c("calves", "adults") # Give a distinct name for each class as used i
 
 SAVENAME <- "CodeElk_NewEqn" # Specifies which folder contains species specific data
 
+PERTNAME <- "PERTelk" # Specifies the name of the .r perturbation file
+
+PATH_PERTURB <- "Perturb_Document_Code_Data" # Specifies which folder contains perturbation data
+
+PERTSAVE <- "PERTdataElk" # Specifies the name of the .RData file where the perturbation data will be saved
+
 RNW <- "ElkAnalysisReviewJune2018" # Gives the name of the .rnw file the user wants to run
 
 ERR <- .01 # Error tolerance for convergence. 
@@ -75,14 +81,14 @@ netcode <- c("../NetworkCode1.2_NewEqn/")
 
 
 # Clear the workspace reserving needed network input variables
-base_variables <- c("seasons", "num_nodes", "NETNAME", "tmax", "SIMNAME", "ERR", "OUTPUTS", "SILENT","netcode","base_variables","SAVE_VAR","RUN_PERT", "delta", "SN_length", "PERT","SAVENAME","RNW")
+base_variables <- c("seasons", "num_nodes", "NETNAME", "tmax", "SIMNAME", "ERR", "OUTPUTS", "SILENT","netcode","base_variables", "SAVE_VAR", "RUN_PERT", "delta", "SN_length", "PERT","SAVENAME","RNW","PERTNAME","PATH_PERTURB","PERTSAVE")
 if(!exists("pert_variables")){pert_variables <- c("pert_variables")}
 pert_variables <- c(pert_variables, ls(), "count", "p")
 base_variables <- c(base_variables, "pert_variables") 
 rm(list=setdiff(ls(), c(base_variables, pert_variables)))
 
 if(SAVE_VAR == TRUE){
-  save_variables <- c("save_varibles")
+  save_variables <- c("save_variables")
   base_variables <- c(base_variables, "save_variables")   }
 
 ### SET UP THE NETWORK(S) ###
@@ -104,7 +110,7 @@ if (OUTPUTS == T){
 ##  RUN PERTURBATIONS ##
 ########################
 if (RUN_PERT == T){
-  source(paste("../", SAVENAME, "/","PERTelk.R",sep = ""))
+  source(paste("../", SAVENAME, "/",PERTNAME,".R",sep = ""))
 }
 
 
@@ -112,10 +118,11 @@ if (RUN_PERT == T){
 ### SAVE THE DATA TO RUN .RNW FILE####
 ######################################
 
-save.image(file=paste("../", SAVENAME,"/Perturb_Document_Code_Data/DataFiles/PERTdataElk.RData",sep="" ))
+save.image(file=paste("../", SAVENAME,"/",PATH_PERTURB,"/DataFiles/", PERTSAVE, ".RData",sep="" ))
+
 
 ##########################
-###   RUN PDF FILE     ###
+### COMPILE PDF FILE   ###
 ##########################
 
-#source(paste("../",SAVENAME,"/Perturb_Document_Code_Data/", RNW, ".rnw", sep = ""))
+Sweave(paste("../",SAVENAME,"/",PATH_PERTURB,"/",RNW,".rnw",sep=""), encoding = "UTF-8")

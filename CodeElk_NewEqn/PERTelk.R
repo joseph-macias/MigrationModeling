@@ -3,7 +3,6 @@
 # Set the working directory
 this.dir <- dirname(parent.frame(2)$ofile)
 setwd(this.dir)
-## Run the original baseline code:
 
 # SAVE ORIGINAL VALUES:
 BASECR <- CR

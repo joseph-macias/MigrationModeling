@@ -3,8 +3,6 @@
 # Set the working directory
 this.dir <- dirname(parent.frame(2)$ofile)
 setwd(this.dir)
-## Run the original baseline code:
-source("PlantsSimulation.R")
 
 # SAVE ORIGINAL VALUES:
 # SAVE ORIGINAL VALUES:
@@ -24,8 +22,6 @@ BASEN <- N
 BASEtimestep <- timestep
 BASEtotal_pop <- total_pop
 
-## CHOOSE PERT VALUES
-PERT <- c(.9, .8, .7, .6, .5, 1)   ### For some reason here this only runs if 1 is the last perturbation???
 
 
 print("Perturbing Survival Rates at each Node")

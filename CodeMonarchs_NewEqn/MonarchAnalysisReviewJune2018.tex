@@ -37,8 +37,8 @@
 \author{Joanna Bieri, Christine Sample, Brady Mattsson, Darius Semmens, Joseph Macias, and Summer Stafford}
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
-\SweaveOpts{keep.source=TRUE, prefix.string=RGraphics}
+\input{MonarchAnalysisReviewJune2018-concordance}
+
 \newcommand{\multilineR}[1]{\begin{tabular}[b]{@{}r@{}}#1\end{tabular}}
 \newcommand{\multilineL}[1]{\begin{tabular}[b]{@{}l@{}}#1\end{tabular}}
 \newcommand{\multilineC}[1]{\begin{tabular}[b]{@{}c@{}}#1\end{tabular}}
@@ -49,17 +49,6 @@
 
 \tableofcontents
 
-<<label=runscript, eval=TRUE, echo=FALSE, results=hide>>=
-
-#load("DataFiles/PERTdataMonarch.RData") # Load R data from the file
-
-library(xtable)
-library(data.table)
-library(knitr)
-opts_knit$set(self.contained=FALSE)
-
-node_color <- c("red", "orange", "blue", "green") # W S C N
-@
 
 \section{Monarch Notes and Generalized \texorpdfstring{$C^r$}{CR} }
 We model a population of Monarchs building our model based on the formulation in  {\it{A general modeling framework for describing spatially structured population dynamics}} by Sample et. al.
@@ -102,51 +91,19 @@ N_t^{tot}=\sum_{r=1}^n\sum_{x=1}^{c}N^x_{r,t}
 The baseline simulation gives us identical results to {\it{A general modeling framework for describing spatially
 structured population dynamics}} by Sample et. al. We find that the long term carrying capacity for each node during the nonbreeding season, including all classes, is
 
-<<label=baselineK, echo=FALSE, eval=TRUE>>=
-for (j in 1:seasons){
-  cat("\nseason", j, ": k=", BASEPop_TOTAL[,j])
-}
-@
+\begin{Schunk}
+\begin{Soutput}
+season 1 : k= 104369867 0 0 0
+season 2 : k= 0 50678505 0 0
+season 3 : k= 0 45341487 20370029 0
+season 4 : k= 0 0 53525729 33199558
+season 5 : k= 0 0 45933321 88548303
+season 6 : k= 0 0 72219163 70020140
+season 7 : k= 0 62180832 66308229 0
+\end{Soutput}
+\end{Schunk}
 
 
-<<label=monarchbaseline, fig=TRUE, include=FALSE, echo=FALSE, eps=FALSE, pdf=TRUE, fig.path=paste(SIMNAME)>>=
-time_steps <- 0:BASEtimestep/seasons
-STEPwidth <- seasons
-STEPstart <- 1
-graphbot <- 0 
-graphtop <- max(BASEtotal_pop)
-dottype <- data.frame(matrix(0,1,NUMNET))
-dottype[1] <- 20
-
-plot(c(0),c(0),type="l", 
-     main=paste("Total Network Population vs. Time \n Single Annual Survey (beginning of season 1 - nonbreeding)"),
-     ylim = c(graphbot,graphtop), 
-     xlim = c(min(time_steps),max(time_steps)),
-     xlab="Years",
-     ylab="Total Population")
-
-xplot <- time_steps[seq(STEPstart, length(time_steps),by=STEPwidth)]
-
-for(i in 1:NUMNET){
-  par(new=TRUE)
-  yplot <- BASEtotal_pop[i,seq(STEPstart, length(time_steps),by=STEPwidth)]
-  dot <- as.double(dottype[i])
-  plot(xplot,yplot,
-       type="o", 
-       lty=1, 
-       pch=dot,
-       ylim = c(graphbot,graphtop), 
-       xlim = c(min(time_steps),max(time_steps)), 
-       axes="FALSE", 
-       xlab = "", 
-       ylab = "")
-  
-  dottype[i+1] <- dottype[i] + 1
-}
-rm(i)
-
-legend('right', NETNAME , lty=1, pch=dottype, bty='n', cex=.75)
-@
 
 \begin{figure}[H]
 \begin{center}
@@ -178,23 +135,6 @@ Some notes about the simulations:
 \newpage 
 
 
-<<label=runscript, eval=TRUE, echo=FALSE, results=hide>>=
-
-######################## DATA ##############################################
-# Find change in  carrying capacity for female only population breeding season:
-rm(DELTA_K)
-DELTA_K <- matrix(0,count)
-K <- matrix(0,count)
-BASEK <- sum(BASEN[seq(1,NUMNET*num_nodes,by=NUMNET),BASEtimestep])
-for (i in 1:count){
-  NEWK <- sum(PERT_N[[i]][seq(1,NUMNET*num_nodes,by=NUMNET),PERT_timestep[[i]]])
-  DELTA_K[i] <- NEWK - BASEK
-  K[i] <- NEWK
-}
-
-######################### END DATA #############################
-
-@
 
 \section{Monarch Plots - June 2018 - to Match Pintail Outputs}
 
@@ -213,60 +153,6 @@ In order to be consistent across case studies we decide to calculate $C^r$ using
 
 The Monarch model has seven seasons (Winter and April-September) and one class.
 
-<<label=monarch_barcr_averageCR, fig=TRUE, include=FALSE, echo=FALSE, eps=FALSE, pdf=TRUE>>=
-
-
-# Find MAX/MIN K values
-PLOTMAXK <- matrix(0,num_nodes,1)
-PLOTMINK <- matrix(0,num_nodes,1)
- for(i in 1:num_nodes){
-   PLOTMAXK[i] <- max(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
-   PLOTMINK[i] <- min(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
- }
-
-PLOTBASECR <- BASECRs #CRs contains the population weighted CR value for each node (averaged across clases and seasons)
-
-
-plot(0, 0, 
-     type="l", 
-     lwd=0, 
-     xlim = c(min(PLOTBASECR),max(PLOTBASECR)), 
-     ylim = c(min(PLOTMINK),max(PLOTMAXK)), 
-     main=expression("Range of Network Carying Capacities (K) vs Baseline C"^r),  
-     xlab=expression("Node Baseline Population Weighted Average C"^r), 
-     ylab="Network K")
-symb <- 0
-
-DATAPLOT <- matrix(0,num_nodes,length(PERT))
-
-for(j in 1:num_nodes){
-  par(new = TRUE)
-  # Plot the range for each node
-  
-  DATAPLOT[j,] <- K[seq(j,num_nodes*length(PERT),by=num_nodes)]
-  plot(matrix(PLOTBASECR[j],1,length(PERT)),K[seq(j,num_nodes*length(PERT),by=num_nodes)], 
-       type="o", 
-       lwd=1, 
-       pch=symb, 
-       col=node_color[symb+1],
-       xlim = c(min(PLOTBASECR),max(PLOTBASECR)), 
-       ylim = c(min(PLOTMINK),max(PLOTMAXK)), 
-       axes = FALSE,  
-       xlab="", 
-       ylab="")
-  symb <- symb +1
-}
-
-# Add text to the graph locator(1)
-# text(0.9928,3854811,"AK") 
-# text(1.0495, 2798248, "GC")
-# text(0.8692, 3289092, "NU")
-# text(0.9782, 1250841, "CA")
-# text(1.1328, 3264134, "PR")
-# text(0.94, 2395900, "Baseline")
-abline(h = BASEK, lty=2)
-rm(j)
-@
 
 \vspace{-.5cm}
 \begin{figure}[H]
@@ -301,60 +187,6 @@ rm(j)
 
 $W^r$ is calculated as the percent of the total population residing at a node. This calculation results in $W^r$ values for each node during each seaons. To get a consistent value for the network, we average (not weighted) across the seasons. The final numbers should sum to one.
 
-<<label=monarch_barcr_WR, fig=TRUE, include=FALSE, echo=FALSE, eps=FALSE, pdf=TRUE>>=
-
-
-# Find MAX/MIN K values
-PLOTMAXK <- matrix(0,num_nodes,1)
-PLOTMINK <- matrix(0,num_nodes,1)
- for(i in 1:num_nodes){
-   PLOTMAXK[i] <- max(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
-   PLOTMINK[i] <- min(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
- }
-
-# Calculate a direct average across seasons
-PLOTWR <- BASEWRs # WRs contains the average population proportions (sumed across classes within nodes and averaged across seasions) - not population weighted
-
-plot(0, 0, 
-     type="l", 
-     lwd=0, 
-     xlim = c(min(PLOTWR),max(PLOTWR)), 
-     ylim = c(min(PLOTMINK),max(PLOTMAXK)), 
-     main=expression("Range of Network Carying Capacities (K) vs Baseline W"^r),  
-     xlab=expression("Node Baseline Average W"^r), 
-     ylab="Network K")
-symb <- 0
-
-DATAPLOT <- matrix(0,num_nodes,length(PERT))
-
-for(j in 1:num_nodes){
-  par(new = TRUE)
-  # Plot the range for each node
-  
-  DATAPLOT[j,] <- K[seq(j,num_nodes*length(PERT),by=num_nodes)]
-  plot(matrix(PLOTWR[j],1,length(PERT)),K[seq(j,num_nodes*length(PERT),by=num_nodes)], 
-       type="o", 
-       lwd=1, 
-       pch=symb, 
-       col=node_color[symb+1],
-       xlim = c(min(PLOTWR),max(PLOTWR)), 
-       ylim = c(min(PLOTMINK),max(PLOTMAXK)), 
-       axes = FALSE,  
-       xlab="", 
-       ylab="")
-  symb <- symb +1
-}
-
-# Add text to the graph locator(1)
-# text(0.28,3286895,"NU") 
-# text(0.67, 3734797, "CA")
-# text(0.42, 3831843, "AK")
-# text(0.328, 2786737, "GC")
-# text(0.3, 1555004, "PR")
-# text(0.5, 2395900, "Baseline")
-abline(h = BASEK, lty=2)
-rm(j)
-@
 
 \vspace{-.5cm}
 \begin{figure}[H]
@@ -385,58 +217,6 @@ rm(j)
 
 $D_s$ is calculated following Bagstad et al. We first find the population weighted $C^r$ values for each of the seasons and then average across the anual cycle.
 
-<<label=monarch_barcr_DS, fig=TRUE, include=FALSE, echo=FALSE, eps=FALSE, pdf=TRUE>>=
-
-# Find MAX/MIN K values
-PLOTMAXK <- matrix(0,num_nodes,1)
-PLOTMINK <- matrix(0,num_nodes,1)
-
- for(i in 1:num_nodes){
-   PLOTMAXK[i] <- max(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
-   PLOTMINK[i] <- min(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
- }
-
-
-plot(0, 0, 
-     type="l", 
-     lwd=0, 
-     xlim = c(min(BASEDS),max(BASEDS)), 
-     ylim = c(min(PLOTMINK),max(PLOTMAXK)), 
-     main=expression("Range of Network Carying Capacities (K) vs Baseline D"[s]),  
-     xlab=expression("Node Baseline D"[s]), 
-     ylab="Network K")
-symb <- 0
-
-DATAPLOT <- matrix(0,num_nodes,length(PERT))
-
-for(j in 1:num_nodes){
-  par(new = TRUE)
-  # Plot the range for each node
-  
-  DATAPLOT[j,] <- K[seq(j,num_nodes*length(PERT),by=num_nodes)]
-  plot(matrix(BASEDS[j],1,length(PERT)),K[seq(j,num_nodes*length(PERT),by=num_nodes)], 
-       type="o", 
-       lwd=1, 
-       pch=symb, 
-       col=node_color[symb+1],
-       xlim = c(min(BASEDS),max(BASEDS)), 
-       ylim = c(min(PLOTMINK),max(PLOTMAXK)), 
-       axes = FALSE,  
-       xlab="", 
-       ylab="")
-  symb <- symb +1
-}
-
-# Add text to the graph locator(1)
-# text(0.08123,3309290,"NU") 
-# text(0.2187, 3727332, "CA")
-# text(0.2664, 3824378, "AK")
-# text(0.1146, 2779272, "GC")
-# text(0.316, 3271965, "PR")
-# text(0.15, 2395900, "Baseline")
-abline(h = BASEK, lty=2)
-rm(j)
-@
 
 \vspace{-.5cm}
 \begin{figure}[H]
@@ -474,57 +254,6 @@ In other words $K^r$ represents the amount of the network growth rate that flows
 The $K^r$ calculation results in criticality vales for each node during each season. To get a single yearly value we use a population weighted average.
 
 
-<<label=monarch_barcr_KR, fig=TRUE, include=FALSE, echo=FALSE, eps=FALSE, pdf=TRUE>>=
-
-# Find MAX/MIN K values
-PLOTMAXK <- matrix(0,num_nodes,1)
-PLOTMINK <- matrix(0,num_nodes,1)
- for(i in 1:num_nodes){
-   PLOTMAXK[i] <- max(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
-   PLOTMINK[i] <- min(K[seq(i,num_nodes*length(PERT),by=num_nodes)])
- }
-
-PLOTKR <- BASEKRs #KRs contains the population weighted seasonal average KR values
-plot(0, 0, 
-     type="l", 
-     lwd=0, 
-     xlim = c(min(PLOTKR),max(PLOTKR)), 
-     ylim = c(min(PLOTMINK),max(PLOTMAXK)), 
-     main="Range of Network Carying Capacities (K) vs Baseline Criticality",  
-     xlab="Node Baseline Weighted Average Criticality", 
-     ylab="Network K")
-symb <- 0
-
-DATAPLOT <- matrix(0,num_nodes,length(PERT))
-
-for(j in 1:num_nodes){
-  par(new = TRUE)
-  # Plot the range for each node
-  
-  DATAPLOT[j,] <- K[seq(j,num_nodes*length(PERT),by=num_nodes)]
-  plot(matrix(PLOTKR[j],1,length(PERT)),K[seq(j,num_nodes*length(PERT),by=num_nodes)], 
-       type="o", 
-       lwd=1, 
-       pch=symb, 
-       col=node_color[symb+1],
-       xlim = c(min(PLOTKR),max(PLOTKR)), 
-       ylim = c(min(PLOTMINK),max(PLOTMAXK)), 
-       axes = FALSE,  
-       xlab="", 
-       ylab="")
-  symb <- symb +1
-}
-
-# Add text to the graph locator(1)
-# text(0.3091,3271965,"NU") 
-# text(0.7143, 3742262, "CA")
-# text(0.5466, 3831843, "AK")
-# text(0.4036, 2719551, "GC")
-# text(0.6984, 3204779, "PR")
-# text(0.45, 2395900, "Baseline")
-abline(h = BASEK, lty=2)
-rm(j)
-@
 
 \vspace{-.5cm}
 \begin{figure}[H]

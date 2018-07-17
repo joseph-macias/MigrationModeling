@@ -21,6 +21,9 @@ BASEN <- N
 BASEtimestep <- timestep
 BASEtotal_pop <- total_pop
 
+count <- 0
+pert_variables <- c(pert_variables, ls())
+
 print("Perturbing Survival Rates at each Node")
 print(PERT)
 
